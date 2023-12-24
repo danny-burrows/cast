@@ -191,6 +191,7 @@ name = "cast"
 version = "0.1.0"
 dependencies = [
  "notan",
+ "rayon",
 ]
 
 [[package]]
