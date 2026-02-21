@@ -281,10 +281,9 @@ fn trace_ray(origin: Vec3, direction: Vec3, t_min: f32, t_max: f32, spheres: &[S
 
     if let Some((intersection_point, normal)) =
         ray_intersects_triangle(origin, direction, &triangle)
+        && intersection_point.length() < closest_t
     {
-        if intersection_point.length() < closest_t {
-            return compute_lighting(intersection_point, normal.normalize(), origin);
-        }
+        return compute_lighting(intersection_point, normal.normalize(), origin);
     }
 
     // Cuboid transformation (rotation, translation, etc.)
@@ -293,10 +292,10 @@ fn trace_ray(origin: Vec3, direction: Vec3, t_min: f32, t_max: f32, spheres: &[S
 
     let pp =
         ray_intersects_cuboid_no_rotation(origin, direction, cuboid_position, cuboid_half_extents);
-    if let Some((pt, nt)) = pp {
-        if pt.length() < closest_t {
-            return compute_lighting(pt, nt / nt.length(), origin);
-        }
+    if let Some((pt, nt)) = pp
+        && pt.length() < closest_t
+    {
+        return compute_lighting(pt, nt / nt.length(), origin);
     }
 
     if let Some(s) = closest_sphere {
@@ -310,22 +309,22 @@ fn trace_ray(origin: Vec3, direction: Vec3, t_min: f32, t_max: f32, spheres: &[S
 }
 
 fn update(app: &mut App, state: &mut State) {
-    if app.keyboard.is_down(KeyCode::W) {
+    if app.keyboard.is_down(KeyCode::KeyW) {
         state.camera.position += state.camera.rotation * Vec3::from_array([0.0, 0.0, 0.05]);
     }
-    if app.keyboard.is_down(KeyCode::S) {
+    if app.keyboard.is_down(KeyCode::KeyS) {
         state.camera.position -= state.camera.rotation * Vec3::from_array([0.0, 0.0, 0.05]);
     }
-    if app.keyboard.is_down(KeyCode::A) {
+    if app.keyboard.is_down(KeyCode::KeyA) {
         state.camera.position -= state.camera.rotation * Vec3::from_array([0.05, 0.0, 0.0]);
     }
-    if app.keyboard.is_down(KeyCode::D) {
+    if app.keyboard.is_down(KeyCode::KeyD) {
         state.camera.position += state.camera.rotation * Vec3::from_array([0.05, 0.0, 0.0]);
     }
-    if app.keyboard.is_down(KeyCode::E) {
+    if app.keyboard.is_down(KeyCode::KeyE) {
         state.camera.rotation *= Mat3::from_rotation_y(0.025);
     }
-    if app.keyboard.is_down(KeyCode::Q) {
+    if app.keyboard.is_down(KeyCode::KeyQ) {
         state.camera.rotation *= Mat3::from_rotation_y(0.025).inverse();
     }
 
